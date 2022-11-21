@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    user: rabbitmq:rabbitmq
+    container_name: rabbitmq
+    ports:
+        - 5672:5672
+        - 15672:15672
+        - 1883:1883
+    volumes:
+        #- ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        #- ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq/
+        #queste sopra sarebbero quelle "corrette" pero' facendo una cartella portable uso questi
+        - ./dockerfiles/rabbitmq/data/:/var/lib/rabbitmq/
+        - ./dockerfiles/rabbitmq/log/:/var/log/rabbitmq/
+    restart: unless-stopped
