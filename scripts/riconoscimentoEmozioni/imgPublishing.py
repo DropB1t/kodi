@@ -17,7 +17,7 @@ def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client1.subscribe("net/0000/cameraReply")
+    client1.subscribe("emt/0000/cameraReply")
     
 def on_message(client, userdata, msg):
     #print(msg.topic+" "+str(msg.payload))
@@ -34,5 +34,5 @@ client1.on_connect = on_connect
 #client1.username_pw_set("mqtt-test", "mqtt-test")
 client1.connect(broker,port)                                 #establish connection
 #ret= client1.publish("camera",byte_encode)                   #publish
-ret= client1.publish("net/0000/camera",byte_encode)                   #publish
+ret= client1.publish("emt/0000/camera",byte_encode)                   #publish
 client1.loop_forever()

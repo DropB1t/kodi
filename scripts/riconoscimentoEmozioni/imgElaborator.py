@@ -65,12 +65,12 @@ def respond(person,id):
     client1.on_publish = on_publish                          #assign function to callback
     #client1.username_pw_set("mqtt-test", "mqtt-test")
     client1.connect(broker,port)                                 #establish connection
-    ret= client1.publish("net/"+id+"/cameraReply",person)
+    ret= client1.publish("emt/"+id+"/cameraReply",person)
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe("net/+/camera")
+    client.subscribe("emt/+/camera")
 
 
 

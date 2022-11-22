@@ -13,7 +13,9 @@ l'input e' preso in
 img = cv2.imread("./1.jpg")
 ```
 ### topic
-+ net pensato come top level
++ il top level si divide in:
+ - prsn: riconoscimento persona
+ - emt: riconoscimento emozioni
 + 0000 e' l'id della macchina
 + camera -> webcam
 + smartwatch (o forse no)
@@ -23,8 +25,9 @@ per le risposte stesso id e poi
 + smartwatchReply
 
 ## imgElaborator.py
-vuole le immagini encodate come sopra e restituisce il nome detectato
+vuole le immagini encodate come sopra e restituisce il nome detectato tramite mqtt
 
 ## Note
-A volte la 1.jpg non viene mandata, non so se perche' sbagliavo qualcosa io se 
-proprio va spezzettata
+A volte la 1.jpg non viene mandata, non so se perche' sbagliavo qualcosa io o se 
+proprio va spezzettata. 
+Aggiornamento: sembra andare, se non riscontro piu' il problema togliero' la nota
