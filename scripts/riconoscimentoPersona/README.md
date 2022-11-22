@@ -14,8 +14,8 @@ img = cv2.imread("./1.jpg")
 ```
 ### topic
 + il top level si divide in:
- - prsn: riconoscimento persona
- - emt: riconoscimento emozioni
+ + prsn: riconoscimento persona
+ + emt: riconoscimento emozioni
 + 0000 e' l'id della macchina
 + camera -> webcam
 + smartwatch (o forse no)
