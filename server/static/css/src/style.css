@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Harborn";
+    src: url("../fonts/Harborn.ttf") format('truetype');
+  }

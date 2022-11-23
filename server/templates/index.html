@@ -4,11 +4,11 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
       <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
       <title>Kodi Dashboard</title>
    </head>
    <body>
-      <h1>Dashboard</h1>
-      <h3>Welcome back ! | {{ time }}</h3> <!-- Mettere la data e il meteo -->
+      <h6 class="px-4 pt-3 text-blue-600 font-bold">Dashboard</h6>
+      <h3 class="px-4 pb-1">Welcome back ! | {{ time }}</h3> <!-- Mettere la data e il meteo -->
    </body>
 </html>
