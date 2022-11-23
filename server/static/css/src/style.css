@@ -3,6 +3,6 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "Harborn";
-    src: url("../fonts/Harborn.ttf") format('truetype');
+    font-family: "Call_Duty";
+    src: url("../fonts/Call_Duty.otf") format("opentype");
   }

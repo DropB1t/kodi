@@ -13,13 +13,16 @@ topic_sub = 'prsn/0000/cameraReply'
 
 mqtt_client = Mqtt(app)
 
-"""  App Routes """
+""" App Routes """
 
 @app.route("/")
-@app.route("/index")
 def index():
-   return render_template('index.html')
+    return render_template('index.html')
 
+"""
+Dopo 50 iterazioni smetti di publicare verso il topic, quando
+ricevo la risposta chiudo lo streming di video in front-end e faccio redirect all'alternative
+"""
 def gen(camera):
     while True:
         frame = camera.get_frame()
@@ -31,22 +34,33 @@ def gen(camera):
 def video_feed():
     return app.response_class(gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+""" MQTT Handlers """
+
 @mqtt_client.on_connect()
 def handle_connect(client, userdata, flags, rc):
-   if rc == 0:
-       print('Connected successfully')
-       mqtt_client.subscribe(topic_sub)
-   else:
-       print('Bad connection. Code:', rc)
+    if rc == 0:
+        print('Connected successfully')
+        mqtt_client.subscribe(topic_sub)
+    else:
+        print('Bad connection. Code:', rc)
+
+"""
+Alla ricezione dello UIID fetcho configurazione personale
+della persona contenuta localmente sul sistema ( Un oggetto seriallizato )
+"""
 
 @mqtt_client.on_message()
 def handle_mqtt_message(client, userdata, msg):
-   if msg.topic == topic_sub:
-      print('Received message on topic: {topic} with payload: {payload}'.format(msg.topic,msg.payload))
+    if msg.topic == topic_sub:
+        print('Received message on topic: {topic} with payload: {payload}'.format(msg.topic, msg.payload))
 
+""" 
+Preferendo una canzone mandi verso il topic <prs/000/preferenceMusic> e 
+la conferma della preferenza in un json
+"""
 @mqtt_client.on_publish()
-def on_publish(client,userdata,result):
-   print("Data published \n")
+def on_publish(client, userdata, result):
+    print("Data published \n")
 
 """ @app.route('/publish', methods=['POST'])
 def publish_message():
@@ -56,5 +70,5 @@ def publish_message():
  """
 
 if __name__ == "__main__":
-   app.debug = True;
-   app.run(debug=True, use_reloader=False)
+    app.debug = True
+    app.run(debug=True, use_reloader=False)

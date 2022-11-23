@@ -10,9 +10,13 @@ module.exports = {
   },
   theme: {
     fontFamily: {
-      'sans': ['Harborn', 'sans-serif'],
+      'sans': ['Call_Duty', 'sans-serif'],
     },
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'main': "linear-gradient(to bottom, #d8eefe, #c2e4fd, #abd9fb, #93cffa, #79c4f9)",
+      }
+    },
   },
   plugins: [],
 }
