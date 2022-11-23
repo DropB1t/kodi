@@ -20,7 +20,7 @@ def getFrame(sec):
     hasFrames,image = video.read()
     if hasFrames:
         width = image.shape[1]
-        image = cv2.flip(image,0)#flip verticale
+        #image = cv2.flip(image,0)#flip verticale
         cropped = image[0:width, 0:width] # ricordati che prende il quadrato alto della fotocamera(height[from top], width)
         final = cv2.resize(cropped,(48,48))
         cv2.imwrite("./img/image"+str(count)+".jpg", final)
