@@ -1,4 +1,5 @@
 from threading import Thread
+import base64
 import numpy as np
 import cv2
 
@@ -7,8 +8,8 @@ import cv2
 
 class WebcamVideoStream:
 
-    def __init__(self, src=0):
-        self.stream = cv2.VideoCapture(src, cv2.CAP_DSHOW)
+    def __init__(self, src=-1):
+        self.stream = cv2.VideoCapture(src)
         (self.grabbed, self.frame) = self.stream.read()
         self.stopped = False
 
@@ -38,11 +39,14 @@ class WebcamVideoStream:
 ''' Class for reading video stream'''
 
 
-class VideoCamera(object):
+class VideoCamera:
+
+    def __init__(self):
+        self.cap = WebcamVideoStream(src=0).start()
+
 
     def get_frame(self):
-        cap = WebcamVideoStream(src=0).start()
-        image = cap.read()
+        image = self.cap.read()
         """ 
         image=cv2.resize(image,(600,500))
         image=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
@@ -50,6 +54,6 @@ class VideoCamera(object):
         pic = cv2.cvtColor(last_frame, cv2.COLOR_BGR2RGB)
         """
         ret, jpeg = cv2.imencode('.jpg', image)
-        img = np.array(jpeg)
+        data = np.array(jpeg)
 
-        return img.tobytes()
+        return data.tobytes()
