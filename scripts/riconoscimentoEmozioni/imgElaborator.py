@@ -5,6 +5,7 @@ from tensorflow.keras.models import model_from_json
 import numpy as np
 import sys
 import re
+from collections import Counter
 
 broker = "127.0.0.1"
 port = 1883
@@ -72,7 +73,7 @@ def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
     client.subscribe("emt/+/camera")
 
-
+preds = []
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
@@ -81,6 +82,13 @@ def on_message(client, userdata, msg):
     imag = np.frombuffer(msg.payload, dtype=np.uint8)
     img = cv2.imdecode(imag, cv2.IMREAD_COLOR)#forse come secondo argomento anche 0 per scala di grigi
     pred = recognize(img)
+    preds.append(pred);
+    pred = "buffering"
+    if len(preds) == 6:
+        preds.pop(0)
+        print(preds)
+        occ = Counter(preds)
+        pred = occ.most_common(1)[0][0]
     respond(pred,id)
 
 client = mqtt.Client("recognizer")
