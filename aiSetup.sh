@@ -12,3 +12,5 @@ apt install python3-pip -y
 pip install opencv-python 
 pip install tensorflow 
 pip install paho-mqtt
+pip install pillow
+pip install scipi

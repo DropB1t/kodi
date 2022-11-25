@@ -1,3 +1,5 @@
 /mosquitto
 /mongo/data
 /scripts/addestramentoPersona/img
+/scripts/addestramentoPersona/test
+/scripts/addestramentoPersona/train
