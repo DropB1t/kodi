@@ -1,11 +1,9 @@
 from threading import Thread
-import base64
 import numpy as np
+import base64
 import cv2
 
-''' Class for using another thread for video streaming to boost performance '''
-
-
+''' Threaded Class to implement Video Stream '''
 class WebcamVideoStream:
 
     def __init__(self, src=-1):
@@ -14,31 +12,21 @@ class WebcamVideoStream:
         self.stopped = False
 
     def start(self):
-        # start the thread to read frames from the video stream
-        Thread(target=self.update, args=()).start()
+        Thread(target=self.update, args=()).start() # start the thread to read frames from the video stream
         return self
 
     def update(self):
-        # keep looping infinitely until the thread is stopped
-        while True:
-            # if the thread indicator variable is set, stop the thread
-            if self.stopped:
-                return
-            # otherwise, read the next frame from the stream
-            (self.grabbed, self.frame) = self.stream.read()
+        while not self.stopped:
+            (self.grabbed, self.frame) = self.stream.read() #read the next frame from the stream
 
     def read(self):
-        # return the frame most recently read
-        return self.frame
+        return self.frame # return the frame most recently read
 
     def stop(self):
-        # indicate that the thread should be stopped
         self.stopped = True
 
 
-''' Class for reading video stream'''
-
-
+''' Class for managing Webcam Stream'''
 class VideoCamera:
 
     def __init__(self):
@@ -47,13 +35,15 @@ class VideoCamera:
 
     def get_frame(self):
         image = self.cap.read()
-        """ 
-        image=cv2.resize(image,(600,500))
-        image=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-        last_frame = image.copy()
-        pic = cv2.cvtColor(last_frame, cv2.COLOR_BGR2RGB)
-        """
+
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        fm = cv2.Laplacian(gray, cv2.CV_64F).var()
+        blurred = False
+
+        if fm < 300: # Treshhold under which the image proccessed is percepted as blurry
+            blurred = True
+
         ret, jpeg = cv2.imencode('.jpg', image)
         data = np.array(jpeg)
-
-        return data.tobytes()
+        encoded_text = base64.b64encode(jpeg)
+        return encoded_text, data.tobytes(), blurred
