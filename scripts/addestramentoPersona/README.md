@@ -1,3 +1,6 @@
+## topics mqtt
+training/0000/0
+training/idMacchina/idPersona
 ## imgStorer.py
 Questo e' lo snippet di codice che salva le immagini all'interno di mongoDB. Nota:
 ```
