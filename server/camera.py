@@ -1,12 +1,11 @@
 from threading import Thread
 import numpy as np
-import base64
 import cv2
 
 ''' Threaded Class to implement Video Stream '''
 class WebcamVideoStream:
 
-    def __init__(self, src=-1):
+    def __init__(self, src=0):
         self.stream = cv2.VideoCapture(src)
         (self.grabbed, self.frame) = self.stream.read()
         self.stopped = False
@@ -30,7 +29,7 @@ class WebcamVideoStream:
 class VideoCamera:
 
     def __init__(self):
-        self.cap = WebcamVideoStream(src=0).start()
+        self.cap = WebcamVideoStream().start()
 
 
     def get_frame(self):
@@ -40,10 +39,12 @@ class VideoCamera:
         fm = cv2.Laplacian(gray, cv2.CV_64F).var()
         blurred = False
 
+        print(fm)
+
         if fm < 50: # Treshhold under which the image proccessed is percepted as blurry
             blurred = True
 
         ret, jpeg = cv2.imencode('.jpg', image)
         data = np.array(jpeg)
-        encoded_text = base64.b64encode(jpeg)
-        return encoded_text, data.tobytes(), blurred
+        
+        return data.tobytes(), blurred

@@ -3,7 +3,9 @@ from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from camera import VideoCamera
 import eventlet
-import json
+import base64
+import signal
+import sys
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -11,6 +13,8 @@ app.config['MQTT_BROKER_URL'] = 'broker.emqx.io'
 app.config['MQTT_BROKER_PORT'] = 1883
 
 mqtt = Mqtt(app)
+
+cam = VideoCamera()
 
 # TODO Creare un Config Parser
 
@@ -26,6 +30,13 @@ emotion_reply = 'emt/0000/cameraReply'
 music_ranking_pub = 'prsn/0000/musicRanking'
 place_ranking_pub = 'prsn/0000/placeRanking'
 
+def signal_handler(sig, frame):
+    print('\nClosing camera streming script')
+    cam.cap.stop()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
 """ App Routes """
 
 @app.route("/")
@@ -39,8 +50,9 @@ ricevo la risposta chiudo lo streming di video in front-end e faccio redirect al
 def gen(camera):
     i = 0
     while True:
-        payload, frame, blurred = camera.get_frame()
+        frame, blurred = camera.get_frame()
         if not blurred and i < 50:
+            payload = base64.b64encode(frame)
             mqtt.publish(recognition_pub, payload)
             i += 1
         if i == 50:
@@ -49,7 +61,7 @@ def gen(camera):
 
 @app.route('/video_feed')
 def video_feed():
-    return app.response_class(gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return app.response_class(gen(cam), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 """ MQTT Handlers """
 
