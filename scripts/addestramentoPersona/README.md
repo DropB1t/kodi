@@ -38,3 +38,15 @@ foto = {
 }
 ```
 Dove l'id e' generato in modo progressivo. Forse l'id non serve ma per sicurezza l'ho messo
+
+## imgRetriever.py
+E' incompleto perche' non so come salvare le foto. Se si passeranno come array allo script di addestramento
+questo snippet andra' integrato a quello di addestramento. In caso invece si salvino in cartelle temporanee 
+si puo' usare gli script come sono ora.
+## imgSender.py
+Manda foto 48x48 grayScale nella cartella ./img
+## modelGenerator.py
+Genera il modello. Nota che il parametro 2 nel layer denso finale dipende da quante persone bisogna addestrare
+quindi nello script finale bisogna detectare o il numero di cartelle o il numero di persone diverse nell'array
+## trainer.py
+Quello che effettivamente addestra il modello e genera i pesi. 
