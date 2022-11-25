@@ -40,7 +40,7 @@ class VideoCamera:
         fm = cv2.Laplacian(gray, cv2.CV_64F).var()
         blurred = False
 
-        if fm < 300: # Treshhold under which the image proccessed is percepted as blurry
+        if fm < 50: # Treshhold under which the image proccessed is percepted as blurry
             blurred = True
 
         ret, jpeg = cv2.imencode('.jpg', image)

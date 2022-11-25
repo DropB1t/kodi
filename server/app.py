@@ -10,7 +10,7 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['MQTT_BROKER_URL'] = 'broker.emqx.io'
 app.config['MQTT_BROKER_PORT'] = 1883
 
-mqtt = Mqtt()
+mqtt = Mqtt(app)
 
 # TODO Creare un Config Parser
 
@@ -30,7 +30,6 @@ place_ranking_pub = 'prsn/0000/placeRanking'
 
 @app.route("/")
 def index():
-    mqtt.init_app(app)
     return render_template('index.html')
 
 """ TODO
@@ -38,12 +37,15 @@ Dopo 50 iterazioni finisci di publicare verso il topic (codificato con base64 ),
 ricevo la risposta chiudo lo streming di video in front-end e faccio redirect alle alternative
 """
 def gen(camera):
+    i = 0
     while True:
         payload, frame, blurred = camera.get_frame()
-        if not blurred:
+        if not blurred and i < 50:
             mqtt.publish(recognition_pub, payload)
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+            i += 1
+        if i == 50:
+            print("Trasmitted successfully 50 images for face recognition")
+        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 @app.route('/video_feed')
 def video_feed():
@@ -81,7 +83,6 @@ def on_publish(client, userdata, result):
     print("Data published \n")
 
 """
-<<<<<<< Updated upstream
 Preferendo una canzone mandi verso il topic <prsn/0000/musicPreference> e 
 la conferma della preferenza in un json
 """
@@ -89,8 +90,6 @@ la conferma della preferenza in un json
 """ WebSocketIO Dispatcher """
 
 """
-=======
->>>>>>> Stashed changes
 @app.route('/publish', methods=['POST'])
 def publish_message():
    request_data = request.get_json()
