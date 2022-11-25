@@ -15,7 +15,7 @@ def get_database():
 # Get the database
 dbname = get_database() 
 
-collection_name = dbname["0000"]
+collection_name = dbname["0000/1"]
 
 item_details = collection_name.find()
 
