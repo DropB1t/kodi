@@ -3,6 +3,7 @@ from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from camera import VideoCamera
 import eventlet
+import json
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -80,6 +81,7 @@ def on_publish(client, userdata, result):
     print("Data published \n")
 
 """
+<<<<<<< Updated upstream
 Preferendo una canzone mandi verso il topic <prsn/0000/musicPreference> e 
 la conferma della preferenza in un json
 """
@@ -87,6 +89,8 @@ la conferma della preferenza in un json
 """ WebSocketIO Dispatcher """
 
 """
+=======
+>>>>>>> Stashed changes
 @app.route('/publish', methods=['POST'])
 def publish_message():
    request_data = request.get_json()

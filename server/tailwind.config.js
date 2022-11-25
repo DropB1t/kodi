@@ -10,11 +10,11 @@ module.exports = {
   },
   theme: {
     fontFamily: {
-      'sans': ['Call_Duty', 'sans-serif'],
+      'sans': ['Samsung Sans Regular', 'sans-serif'],
     },
     extend: {
       backgroundImage: {
-        'main': "linear-gradient(to bottom, #d8eefe, #c2e4fd, #abd9fb, #93cffa, #79c4f9)",
+        'main': "radial-gradient(circle, #8093ff, #7581fa, #6d6ff5, #675bee, #6445e5);",
       }
     },
   },

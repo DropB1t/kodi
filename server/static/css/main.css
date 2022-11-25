@@ -43,7 +43,7 @@ html {
   -o-tab-size: 4;
      tab-size: 4;
   /* 3 */
-  font-family: Call_Duty, sans-serif;
+  font-family: Samsung Sans Regular, sans-serif;
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
@@ -561,6 +561,12 @@ video {
   width: 100%;
 }
 
+.border-spacing-20 {
+  --tw-border-spacing-x: 5rem;
+  --tw-border-spacing-y: 5rem;
+  border-spacing: var(--tw-border-spacing-x) var(--tw-border-spacing-y);
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -593,7 +599,7 @@ video {
 }
 
 .bg-main {
-  background-image: linear-gradient(to bottom, #d8eefe, #c2e4fd, #abd9fb, #93cffa, #79c4f9);
+  background-image: radial-gradient(circle, #8093ff, #7581fa, #6d6ff5, #675bee, #6445e5);;
 }
 
 .bg-cover {
@@ -606,6 +612,10 @@ video {
 
 .fill-gray-800 {
   fill: #1f2937;
+}
+
+.fill-gray-900 {
+  fill: #111827;
 }
 
 .px-4 {
@@ -645,9 +655,19 @@ video {
   color: rgb(156 163 175 / var(--tw-text-opacity));
 }
 
+.text-\[\#363636\] {
+  --tw-text-opacity: 1;
+  color: rgb(54 54 54 / var(--tw-text-opacity));
+}
+
 .text-gray-500 {
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+
+.text-gray-100 {
+  --tw-text-opacity: 1;
+  color: rgb(243 244 246 / var(--tw-text-opacity));
 }
 
 .shadow-sm {
@@ -657,7 +677,51 @@ video {
 }
 
 @font-face {
-  font-family: "Call_Duty";
+  font-family: 'Samsung Sans Regular';
 
-  src: url("../fonts/Call_Duty.otf") format("opentype");
+  font-style: normal;
+
+  font-weight: normal;
+
+  src: local('Samsung Sans Regular'), url('../fonts/SamsungSans-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Samsung Sans Thin';
+
+  font-style: normal;
+
+  font-weight: normal;
+
+  src: local('Samsung Sans Thin'), url('../fonts/SamsungSans-Thin.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Samsung Sans Light';
+
+  font-style: normal;
+
+  font-weight: normal;
+
+  src: local('Samsung Sans Light'), url('../fonts/SamsungSans-Light.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Samsung Sans Medium';
+
+  font-style: normal;
+
+  font-weight: normal;
+
+  src: local('Samsung Sans Medium'), url('../fonts/SamsungSans-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Samsung Sans Bold';
+
+  font-style: normal;
+
+  font-weight: normal;
+
+  src: local('Samsung Sans Bold'), url('../fonts/SamsungSans-Bold.woff') format('woff');
 }
