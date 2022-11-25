@@ -4,6 +4,8 @@ fa il setup per
 + opencv
 + numpy
 + mqtt(paho)
++ pillow
++ scipi
 
 ## mosquittoSetup.sh
 fa il setup per mosquitto usando docker compose
