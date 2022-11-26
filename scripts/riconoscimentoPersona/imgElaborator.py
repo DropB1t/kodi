@@ -79,6 +79,7 @@ def on_message(client, userdata, msg):
     id = result.group(1)
     imag = np.frombuffer(msg.payload, dtype=np.uint8)
     img = cv2.imdecode(imag, cv2.IMREAD_COLOR)#forse come secondo argomento anche 0 per scala di grigi
+    preds=[]
     pred = recognize(img)
     preds.append(pred);
     pred = "buffering"

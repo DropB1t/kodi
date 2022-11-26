@@ -74,6 +74,7 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("prsn/+/camera")
 
 
+preds = [] # che schifo
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
@@ -86,7 +87,6 @@ def on_message(client, userdata, msg):
     pred = "buffering"
     if len(preds) == 6:
         preds.pop(0)
-        print(preds)
         occ = Counter(preds)
         pred = occ.most_common(1)[0][0]
     respond(pred,id)
