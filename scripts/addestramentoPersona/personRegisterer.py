@@ -20,14 +20,14 @@ def get_database():
 
 def store(car, person):
     dbname = get_database()
-    collection_name = dbname[car][uid]
+    collection_name = dbname[car]["people"]
     sizeT = list(collection_name.find())
     startingId = 0
     if len(sizeT) != 0:
-        startingId = list(collection_name.find().sort("foto_id",-1).limit(1))[0]["foto_id"]
+        startingId = list(collection_name.find().sort("person_id",-1).limit(1))[0]["person_id"]+1
     foto = {
-            "foto_id" : startingId+1,
-            "foto" : img
+            "person_id" : startingId,
+            "person" : person.decode("utf-8")
     }
     collection_name.insert_one(foto)#TODO cambia con insert_many
 
@@ -45,3 +45,5 @@ def begin():
     client.on_message = on_message
     client.connect(broker, port)
     client.loop_forever()
+
+begin()

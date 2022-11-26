@@ -17,6 +17,7 @@ client1= mqtt.Client("testPubisherForTraining")                           #creat
 client1.on_publish = on_publish                         #assign function to callback
 client1.on_connect = on_connect
 client1.connect(broker,port)                                 #establish connection
+person = "Sempronio"
 
 
 client1.publish("register/0000",person)
