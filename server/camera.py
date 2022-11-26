@@ -7,6 +7,9 @@ class WebcamVideoStream:
 
     def __init__(self, src=0):
         self.stream = cv2.VideoCapture(src)
+        self.stream.set(3,640)
+        self.stream.set(4, 360)
+        self.stream.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
         (self.grabbed, self.frame) = self.stream.read()
         self.stopped = False
 
@@ -38,8 +41,6 @@ class VideoCamera:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         fm = cv2.Laplacian(gray, cv2.CV_64F).var()
         blurred = False
-
-        print(fm)
 
         if fm < 50: # Treshhold under which the image proccessed is percepted as blurry
             blurred = True

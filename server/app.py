@@ -31,7 +31,7 @@ music_ranking_pub = 'prsn/0000/musicRanking'
 place_ranking_pub = 'prsn/0000/placeRanking'
 
 def signal_handler(sig, frame):
-    print('\nClosing camera streming script')
+    print('\nClosing camera streaming script')
     cam.cap.stop()
     sys.exit(0)
 
@@ -57,6 +57,7 @@ def gen(camera):
             i += 1
         if i == 50:
             print("Trasmitted successfully 50 images for face recognition")
+            i += 1
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 @app.route('/video_feed')
