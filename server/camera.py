@@ -7,8 +7,8 @@ class WebcamVideoStream:
 
     def __init__(self, src=0):
         self.stream = cv2.VideoCapture(src)
-        self.stream.set(3,640)
-        self.stream.set(4, 360)
+        self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.stream.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
         (self.grabbed, self.frame) = self.stream.read()
         self.stopped = False
@@ -26,6 +26,7 @@ class WebcamVideoStream:
 
     def stop(self):
         self.stopped = True
+        self.stream.release()
 
 
 ''' Class for managing Webcam Stream'''
