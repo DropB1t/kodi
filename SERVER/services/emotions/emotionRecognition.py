@@ -4,7 +4,10 @@ import tensorflow as tf
 from tensorflow.keras.models import model_from_json
 import numpy as np
 import sys
+import time
+from threading import Thread
 import re
+import base64
 from collections import Counter
 
 broker = "127.0.0.1"
@@ -72,7 +75,7 @@ def respond(person,id):
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+    print("Connected emotions with result code "+str(rc))
     client.subscribe("emt/+/camera")
 
 preds = []
@@ -81,26 +84,25 @@ preds = []
 def on_message(client, userdata, msg):
     result = re.search('/(.*)/', msg.topic)#prendo l'id con regex
     id = result.group(1)
-    imag = np.frombuffer(msg.payload, dtype=np.uint8)
+    data = base64.b64decode(msg.payload)
+    imag = np.frombuffer(data, dtype=np.uint8)
     img = cv2.imdecode(imag, cv2.IMREAD_COLOR)#forse come secondo argomento anche 0 per scala di grigi
     pred = recognize(img)
     preds.append(pred);
     pred = "buffering"
     if len(preds) == 6:
         preds.pop(0)
-        print(preds)
         occ = Counter(preds)
         pred = occ.most_common(1)[0][0]
     respond(pred,id)
 
 def begin():
-    client = mqtt.Client("recognizer")
-    client.on_connect = on_connect
-    client.on_message = on_message
-    client.connect("127.0.0.1", 1883)
-    client.loop_forever()
+    clientE = mqtt.Client("emotionsRecognizer")
+    clientE.on_connect = on_connect
+    clientE.on_message = on_message
+    clientE.connect("127.0.0.1", 1883)
+    return clientE
+    
 
-
-
-
-
+def giro(clientE):
+    clientE.loop(0.1)
