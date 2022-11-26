@@ -2,7 +2,7 @@ Questa e' la cartella del server come dovrebbe apparire come quando deployata
 
 
 51 immagini per iniziare e poi basta NOTA
-encoding base64 foto
+encoding base64 
 ritorno riconoscimento persona
 ```
 {
@@ -29,8 +29,6 @@ adv/0000/placeList
 {
   [{title: "cane", author: "gianni"},{}]
 }
-{"_id":0,"name":1,"album":1, "artists":1}
-{"_id":0,"name":1,"latitude_radian":1, "longitude_radian":1}
+{"name":1,"album":1, "artists":1}
+{"name":1,"latitude_radian":1, "longitude_radian":1}
 ```
-
-manda json poi vedi in script Davide
