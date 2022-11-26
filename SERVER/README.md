@@ -16,3 +16,13 @@ togliere buffering in entrambi
 
 adv/0000/musicRanking
 adv/0000/placeRanking
+{
+  id: 0
+  adv: stringa
+}
+
+il consiglio lo mandi ogni tot.
+
+adv/0000/musicList
+adv/0000/placeList
+manda json poi vedi in script Davide
