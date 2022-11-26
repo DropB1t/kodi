@@ -22,7 +22,15 @@ adv/0000/placeRanking
 }
 
 il consiglio lo mandi ogni tot.
-
+```
 adv/0000/musicList
 adv/0000/placeList
+
+{
+  [{title: "cane", author: "gianni"},{}]
+}
+{"_id":0,"name":1,"album":1, "artists":1}
+{"_id":0,"name":1,"latitude_radian":1, "longitude_radian":1}
+```
+
 manda json poi vedi in script Davide
