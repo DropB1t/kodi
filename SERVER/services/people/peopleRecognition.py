@@ -19,9 +19,17 @@ modelWeights = "./services/people/model_weights.h5"
 
 class PersonModel(object):
 
-    PERSONS_LIST = ["Antonio Bruni","Davide Bruni",
-                    "Davide Tonellotto"]
+    # test
+    # PERSONS_LIST = ["Federico Landini","Davide Bruni",
+    #               "Davide Tonelli"]
 
+    # considerando che sarà fatto su raspberry, un file di piccole dimensioni va bene, molto più 
+    # leggero e veloce che stabilire una connessione con un db
+    
+    with open("people.txt", "r") as file:
+            person = file.read()
+    PERSONS_LIST = person.split('\n')
+    
     def __init__(self, model_json_file, model_weights_file):
         # load model from JSON file
         with open(model_json_file, "r") as json_file:
@@ -34,7 +42,11 @@ class PersonModel(object):
 
     def predict_person(self, img):
         self.preds = self.loaded_model.predict(img)
-        return PersonModel.PERSONS_LIST[np.argmax(self.preds)]
+        confidence = np.amax(self.preds)
+        if(confidence>=0.80):
+            return PersonModel.PERSONS_LIST[np.argmax(self.preds)]
+        else:
+            return "Unknown"
 
 
 facec = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
