@@ -79,6 +79,10 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("emt/+/camera")
 
 preds = []
+pred = "buffering"
+
+def getEmotion():
+    return pred
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
@@ -89,12 +93,12 @@ def on_message(client, userdata, msg):
     img = cv2.imdecode(imag, cv2.IMREAD_COLOR)#forse come secondo argomento anche 0 per scala di grigi
     pred = recognize(img)
     preds.append(pred);
-    pred = "buffering"
+    #pred = "buffering"
     if len(preds) == 6:
         preds.pop(0)
         occ = Counter(preds)
         pred = occ.most_common(1)[0][0]
-    respond(pred,id)
+        respond(pred,id)
 
 def begin():
     clientE = mqtt.Client("emotionsRecognizer")

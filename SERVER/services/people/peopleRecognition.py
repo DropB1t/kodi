@@ -18,17 +18,15 @@ model = "./services/people/model.json"
 modelWeights = "./services/people/model_weights.h5"
 
 class PersonModel(object):
+    CS = "mongodb://root:root@localhost:27017/"
+    client = MongoClient(CS)
+    dbname = client['kodi']
+    c = dbname["0000.people"]
+    l = list(c.find({},{"persona":1, '_id':0}))
+    PERSONS_LIST = []
+    for o in l:
+        PERSONS_LIST.append(o["persona"])
 
-    # test
-    # PERSONS_LIST = ["Federico Landini","Davide Bruni",
-    #               "Davide Tonelli"]
-
-    # considerando che sarà fatto su raspberry, un file di piccole dimensioni va bene, molto più 
-    # leggero e veloce che stabilire una connessione con un db
-    
-    with open("people.txt", "r") as file:
-            person = file.read()
-    PERSONS_LIST = person.split('\n')
     
     def __init__(self, model_json_file, model_weights_file):
         # load model from JSON file
@@ -46,7 +44,7 @@ class PersonModel(object):
         if(confidence>=0.80):
             return PersonModel.PERSONS_LIST[np.argmax(self.preds)]
         else:
-            return "Unknown"
+            return "unknown"
 
 
 facec = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -54,6 +52,7 @@ model = PersonModel(model, modelWeights)
 
 def recognize(image):
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray_image = image
     faces = facec.detectMultiScale(gray_image, 1.3, 5)
     if len(faces) == 0:
         return "none"
@@ -97,9 +96,10 @@ preds = [] # che schifo
 def on_message(client, userdata, msg):
     result = re.search('/(.*)/', msg.topic)#prendo l'id con regex
     id = result.group(1)
-    data = base64.b64decode(msg.payload)
+    data = base64.b64decode(msg.payload+b'==')
+    #data = msg.payload
     imag = np.frombuffer(data, dtype=np.uint8)
-    img = cv2.imdecode(imag, cv2.IMREAD_COLOR)#forse come secondo argomento anche 0 per scala di grigi
+    img = cv2.imdecode(imag, cv2.IMREAD_UNCHANGED)#forse come secondo argomento anche 0 per scala di grigi
     pred = recognize(img)
     preds.append(pred);
     pred = "buffering"
@@ -108,7 +108,7 @@ def on_message(client, userdata, msg):
         occ = Counter(preds)
         pred = occ.most_common(1)[0][0]
         client = MongoClient("mongodb://root:root@localhost:27017/")
-        collection = client['trainingDatabase'][id]["people"]
+        collection = client['kodi'][id]["people"]
         pid = list(collection.find({"person":pred}))[0]['person_id']
         pred = {"id":pid,"person":pred}
         pred = json.dumps(pred)

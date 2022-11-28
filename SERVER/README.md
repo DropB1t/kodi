@@ -10,9 +10,8 @@ ritorno riconoscimento persona
   persona: "Mario Rossi"
 }
 ```
-riconosco nessuno: id -1, persona: null
+riconosco nessuno: id -1, persona: "unknown"
 
-togliere buffering in entrambi
 
 adv/0000/musicRanking
 adv/0000/placeRanking
@@ -31,4 +30,28 @@ adv/0000/placeList
 }
 {"name":1,"album":1, "artists":1}
 {"name":1,"latitude_radian":1, "longitude_radian":1}
+```
+
+
+Formato del payload dell'update per luoghi
+```
+{
+    place: {
+             'name': "YAYCHI, WEST AZERBAIJAN"
+           },
+    'emotion': 'Happy',
+    'score': -3
+}
+```
+
+Formato del payload dell'update per canzoni
+```
+{
+    'song': {
+                'name': 'Testify',
+                'album': 'The Battle Of Los Angeles'
+            },
+    'emotion': "Happy",
+    'score': 2
+}
 ```
