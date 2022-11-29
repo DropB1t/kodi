@@ -103,7 +103,7 @@ def on_message(client, userdata, msg):
     pred = recognize(img)
     preds.append(pred);
     pred = "buffering"
-    if len(preds) == 51:
+    if len(preds) == 21:
         #preds.pop(0)
         occ = Counter(preds)
         pred = occ.most_common(1)[0][0]
