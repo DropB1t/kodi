@@ -5,9 +5,6 @@
 /*.yml
 /templates
 /scripts
-/scripts/addestramentoPersona/img
-/scripts/addestramentoPersona/test
-/scripts/addestramentoPersona/train
-/serverello/SERVER/update.py
-/serverello/SERVER/services/trainingold
-/serverello/SERVER/services/people/people.txt
+/SERVER/update.py
+/SERVER/services/trainingold
+/SERVER/services/people/people.txt
