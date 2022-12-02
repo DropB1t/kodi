@@ -1,20 +1,22 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template
 from flask_mqtt import Mqtt
-from flask_socketio import SocketIO
-from camera import VideoCamera
+from flask_socketio import SocketIO, emit
+from camera import Camera
 import eventlet
-import base64
-import signal
-import sys
+
+eventlet.monkey_patch()
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['MQTT_BROKER_URL'] = 'broker.emqx.io'
 app.config['MQTT_BROKER_PORT'] = 1883
 
 mqtt = Mqtt(app)
+socketio = SocketIO(app)
 
-cam = VideoCamera()
+camera = Camera()
+imgCount = 0
 
 # TODO Creare un Config Parser
 
@@ -27,15 +29,22 @@ recognition_reply = 'prsn/0000/cameraReply'
 emotion_pub = 'emt/0000/camera'
 emotion_reply = 'emt/0000/cameraReply'
 
-music_ranking_pub = 'prsn/0000/musicRanking'
-place_ranking_pub = 'prsn/0000/placeRanking'
+music_ranking_pub = 'adv/0000/musicRanking'
+place_ranking_pub = 'adv/0000/placeRanking'
 
-def signal_handler(sig, frame):
-    print('\nClosing camera streaming script')
-    cam.cap.stop()
-    sys.exit(0)
+music_list_reply = 'adv/0000/musicList'
+place_list_reply = 'adv/0000/placeList'
 
-signal.signal(signal.SIGINT, signal_handler)
+"""
+lista generica di consigli
+{
+    [{},{},...]
+}
+{
+    id: int,
+    adv: string,
+}
+"""
 
 """ App Routes """
 
@@ -44,25 +53,49 @@ def index():
     return render_template('index.html')
 
 """ TODO
-Dopo 50 iterazioni finisci di publicare verso il topic (codificato con base64 ), quando
+Dopo 21 iterazioni finisci di publicare verso il topic (codificato con base64), quando
 ricevo la risposta chiudo lo streming di video in front-end e faccio redirect alle alternative
+{
+    id: int
+    persona: string
+}
+
+Persona "Sconosciuta"
+{
+    id: -1
+    persona: null
+}
 """
+
+""" 
 def gen(camera):
     i = 0
     while True:
-        frame, blurred = camera.get_frame()
-        if not blurred and i < 50:
-            payload = base64.b64encode(frame)
-            mqtt.publish(recognition_pub, payload)
+        frame = camera.get_frame()
+        if i < 21:
+            mqtt.publish(recognition_pub, frame)
             i += 1
-        if i == 50:
-            print("Trasmitted successfully 50 images for face recognition")
+        if i == 21:
+            print("Trasmitted successfully 21 images for face recognition")
             i += 1
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 @app.route('/video_feed')
 def video_feed():
-    return app.response_class(gen(cam), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return app.response_class(gen(camera), mimetype='multipart/x-mixed-replace; boundary=frame')
+"""
+
+@socketio.on("request-frame", namespace="/camera-feed")
+def camera_frame_requested(message):
+    global imgCount
+    frame = camera.get_frame()
+    if frame is not None:
+        if imgCount < 21:
+            mqtt.publish(recognition_pub, frame)
+            imgCount+= 1
+        emit("new-frame", {
+            "base64": frame.decode("ascii")
+        })
 
 """ MQTT Handlers """
 
@@ -96,8 +129,15 @@ def on_publish(client, userdata, result):
     print("Data published \n")
 
 """
-Preferendo una canzone mandi verso il topic <prsn/0000/musicPreference> e 
-la conferma della preferenza in un json
+@mqtt.on_log()
+def handle_logging(client, userdata, level, buf):
+    print(level, buf)
+"""
+
+"""
+Preferendo una canzone mandi verso il topic <prsn/0000/musicPreference>, ID dell'utente, e 
+la conferma della preferenza in un json ovvero <il nome della canzone>/<il nome del posto>
+
 """
 
 """ WebSocketIO Dispatcher """
@@ -111,4 +151,9 @@ def publish_message():
 """
 
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+    try:
+        camera.start()
+        socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
+    except KeyboardInterrupt:
+        camera.stop()
+    

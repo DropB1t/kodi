@@ -1,52 +1,54 @@
-from threading import Thread
-import numpy as np
+import threading
+import time
 import cv2
+import base64
 
-''' Threaded Class to implement Video Stream '''
-class WebcamVideoStream:
+class Camera:
+    def __init__(self):
+        self.thread = None
+        self.current_frame  = None
+        self.last_access = None
+        self.is_running: bool = False
+        self.camera = cv2.VideoCapture(0)
+        if not self.camera.isOpened():
+            raise Exception("Could not open video device")
+        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-    def __init__(self, src=0):
-        self.stream = cv2.VideoCapture(src)
-        self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        self.stream.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
-        (self.grabbed, self.frame) = self.stream.read()
-        self.stopped = False
+    def __del__(self):
+        self.camera.release()
 
     def start(self):
-        Thread(target=self.update, args=()).start() # start the thread to read frames from the video stream
-        return self
-
-    def update(self):
-        while not self.stopped:
-            (self.grabbed, self.frame) = self.stream.read() #read the next frame from the stream
-
-    def read(self):
-        return self.frame # return the frame most recently read
-
-    def stop(self):
-        self.stopped = True
-        self.stream.release()
-
-
-''' Class for managing Webcam Stream'''
-class VideoCamera:
-
-    def __init__(self):
-        self.cap = WebcamVideoStream().start()
-
+        if self.thread is None:
+            self.thread = threading.Thread(target=self._capture)
+            self.thread.start()
 
     def get_frame(self):
-        image = self.cap.read()
+        self.last_access = time.time()
+        return self.current_frame
 
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        fm = cv2.Laplacian(gray, cv2.CV_64F).var()
-        blurred = False
+    def stop(self):
+        self.is_running = False
+        if self.thread is not None:
+            self.thread.join()
+        self.thread = None
 
-        if fm < 50: # Treshhold under which the image proccessed is percepted as blurry
-            blurred = True
-
-        ret, jpeg = cv2.imencode('.jpg', image)
-        data = np.array(jpeg)
-        
-        return data.tobytes(), blurred
+    def _capture(self):
+        try:
+            self.is_running = True
+            self.last_access = time.time()
+            while self.is_running:
+                #time.sleep(0.001)
+                ret, frame = self.camera.read()
+                if ret:
+                    ret, encoded = cv2.imencode(".jpg", frame)
+                    if ret:
+                        self.current_frame = base64.b64encode(encoded)
+                    else:
+                        print("Failed to encode frame")
+                else:
+                    print("Failed to capture frame")
+        except KeyboardInterrupt:
+            print("Reading thread stopped")
+            self.thread = None
+            self.is_running = False
