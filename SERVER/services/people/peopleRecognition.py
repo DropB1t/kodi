@@ -22,10 +22,10 @@ class PersonModel(object):
     client = MongoClient(CS)
     dbname = client['kodi']
     c = dbname["0000.people"]
-    l = list(c.find({},{"persona":1, '_id':0}))
+    l = list(c.find({},{"person":1, '_id':0}))
     PERSONS_LIST = []
     for o in l:
-        PERSONS_LIST.append(o["persona"])
+        PERSONS_LIST.append(o["person"])
 
     
     def __init__(self, model_json_file, model_weights_file):
@@ -52,10 +52,10 @@ model = PersonModel(model, modelWeights)
 
 def recognize(image):
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray_image = image
+    #gray_image = image
     faces = facec.detectMultiScale(gray_image, 1.3, 5)
     if len(faces) == 0:
-        return "none"
+        return "unknown"
     index = np.where(faces == np.max(faces,axis=0)[2])[0][0]
     # esempio di faces
     # [[  34 1280  104  104]
@@ -70,6 +70,7 @@ def recognize(image):
     x, y, w, h = faces[index]
     resImg = gray_image[y:y+h, x:x+w]
     roi = cv2.resize(resImg, (48, 48))
+    print(roi.ndim)
     pred = model.predict_person(roi[np.newaxis, :, :, np.newaxis])
     return pred
 
@@ -99,11 +100,13 @@ def on_message(client, userdata, msg):
     data = base64.b64decode(msg.payload+b'==')
     #data = msg.payload
     imag = np.frombuffer(data, dtype=np.uint8)
-    img = cv2.imdecode(imag, cv2.IMREAD_UNCHANGED)#forse come secondo argomento anche 0 per scala di grigi
+    img = cv2.imdecode(imag, cv2.IMREAD_COLOR)#forse come secondo argomento anche 0 per scala di grigi
+
+    #imread_unchanged
     pred = recognize(img)
     preds.append(pred);
     pred = "buffering"
-    if len(preds) == 21:
+    if len(preds) == 21: #l'accesso a mongo si dovrebbe fare solo una volta
         #preds.pop(0)
         occ = Counter(preds)
         pred = occ.most_common(1)[0][0]

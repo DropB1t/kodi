@@ -44,7 +44,7 @@ def recognize(image):
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     faces = facec.detectMultiScale(gray_image, 1.3, 5)
     if len(faces) == 0:
-        return "none"
+        return "unknown"
     index = np.where(faces == np.max(faces,axis=0)[2])[0][0]
     # esempio di faces
     # [[  34 1280  104  104]
@@ -82,7 +82,13 @@ preds = []
 pred = "buffering"
 
 def getEmotion():
-    return pred
+    if len(preds) == 5:
+        occ = Counter(preds)
+        tmp = occ.most_common(1)[0][0]
+    else:
+        tmp = "buffering"
+
+    return tmp
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
