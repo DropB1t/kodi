@@ -49,8 +49,9 @@ lista generica di consigli
 """ App Routes """
 
 @app.route("/")
+@app.route("/login")
 def index():
-    return render_template('index.html')
+    return render_template('login.html')
 
 """ TODO
 Dopo 21 iterazioni finisci di publicare verso il topic (codificato con base64), quando
@@ -67,23 +68,7 @@ Persona "Sconosciuta"
 }
 """
 
-""" 
-def gen(camera):
-    i = 0
-    while True:
-        frame = camera.get_frame()
-        if i < 21:
-            mqtt.publish(recognition_pub, frame)
-            i += 1
-        if i == 21:
-            print("Trasmitted successfully 21 images for face recognition")
-            i += 1
-        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-@app.route('/video_feed')
-def video_feed():
-    return app.response_class(gen(camera), mimetype='multipart/x-mixed-replace; boundary=frame')
-"""
+""" WebSocketIO Dispatcher """
 
 @socketio.on("request-frame", namespace="/camera-feed")
 def camera_frame_requested(message):
@@ -114,7 +99,10 @@ della persona contenuta localmente sul sistema ( Un oggetto seriallizato )
 """
 @mqtt.on_topic(recognition_reply)
 def handle_recognition_reply(client, userdata, msg):
-    print('Received message on topic {}: {}'.format(msg.topic, msg.payload.decode()))
+    res = msg.payload.decode()
+    if res.id != -1:
+        print('Recognized user as {}'.format(res))
+        emit("login-success", { "user": res.user })
 
 @mqtt.on_topic(emotion_reply)
 def handle_emotion_reply(client, userdata, msg):
@@ -140,20 +128,10 @@ la conferma della preferenza in un json ovvero <il nome della canzone>/<il nome 
 
 """
 
-""" WebSocketIO Dispatcher """
-
-"""
-@app.route('/publish', methods=['POST'])
-def publish_message():
-   request_data = request.get_json()
-   publish_result = mqtt_client.publish(request_data['topic'], request_data['msg'])
-   return app.make_response({'code': publish_result[0]})
-"""
-
 if __name__ == "__main__":
     try:
         camera.start()
-        socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
+        socketio.run(app, host='127.0.0.1', port=5000, use_reloader=False, debug=True)
     except KeyboardInterrupt:
         camera.stop()
     

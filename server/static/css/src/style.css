@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+.logo-bg {
+  background-image: url(../img/logo.png);
+  background-repeat: no-repeat;
+  background-position: top;
+  background-position-x: right;
+  background-size: 64px;
+}
+
+.screen {
+  @apply h-screen min-w-[400px] max-w-sm 
+  mx-auto flex items-center;
+}
+
+.keyboard {
+  @apply grid grid-cols-3 grid-rows-6 gap-1 
+  p-1 w-full bg-headline h-96 font-bold rounded-lg 
+  ring-2 ring-white/20 shadow text-white select-none;
+}
+
+.keyboard .display {
+  @apply col-span-3 row-span-2 bg-headline rounded-lg 
+  grid grid-cols-9 gap-1 place-content-center
+}
+
+.keyboard button {
+  @apply relative flex items-center justify-center text-3xl 
+  transition-all duration-500 rounded bg-secondary
+  active:scale-95 active:duration-[0s] active:bg-highlight;
+}
+
 @font-face {
   font-family: 'Samsung Sans Regular';
   font-style: normal;

@@ -38,7 +38,7 @@ class Camera:
             self.is_running = True
             self.last_access = time.time()
             while self.is_running:
-                #time.sleep(0.001)
+                time.sleep(0.0001)
                 ret, frame = self.camera.read()
                 if ret:
                     ret, encoded = cv2.imencode(".jpg", frame)
@@ -49,6 +49,8 @@ class Camera:
                 else:
                     print("Failed to capture frame")
         except KeyboardInterrupt:
-            print("Reading thread stopped")
-            self.thread = None
-            self.is_running = False
+            print("Video Stream Interrupted")
+
+        print("Reading thread stopped")
+        self.thread = None
+        self.is_running = False

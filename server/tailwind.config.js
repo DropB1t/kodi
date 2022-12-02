@@ -14,7 +14,13 @@ module.exports = {
     },
     extend: {
       colors: {
-        'background': '#D8EEFE',
+        'main': '#fffffe',
+        'background': '#d8eefe',
+        'paraf': '#5f6c7b',
+        'highlight': '#3da9fc',
+        'secondary': '#90b4ce',
+        'headline': '#094067',
+        'tertiary': '#ef4565',
       }
     }
   },
