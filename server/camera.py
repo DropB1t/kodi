@@ -38,7 +38,7 @@ class Camera:
             self.is_running = True
             self.last_access = time.time()
             while self.is_running:
-                time.sleep(0.0001)
+                time.sleep(0.001)
                 ret, frame = self.camera.read()
                 if ret:
                     ret, encoded = cv2.imencode(".jpg", frame)
