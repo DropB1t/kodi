@@ -10,10 +10,14 @@ import re
 import base64
 from collections import Counter
 
-broker = "127.0.0.1"
-port = 1883
+broker="" # = "127.0.0.1"
+port=0 # = 1883
 model = "./services/emotions/model.json"
 modelWeights = "./services/emotions/model_weights.h5"
+
+def mqttParams(brokerL, portL):
+	broker = brokerL
+	port = portL
 
 class FacialExpressionModel(object):
 

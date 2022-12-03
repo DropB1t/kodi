@@ -2,6 +2,21 @@ from services.people import peopleRecognition as PR
 from services.emotions import emotionRecognition as ER
 from services.advices import consigli as AD
 import random
+import os
+
+broker = os.getenv('BROKER')
+port = os.getenv('PORT')
+user = os.getenv('USR')
+passw = os.getenv('PASS')
+host = os.getenv('HOST')
+
+ER.mqttParams(broker, port)
+PR.mqttParams(broker, port)
+AD.mqttParams(broker, port)
+
+PR.mongoParams(host,user, passw)
+AD.mongoParams(host,user, passw)
+
 
 cl1 = ER.begin()
 cl2 = PR.begin()
@@ -15,9 +30,9 @@ while(True): #amo le attese attive
     if count == 10:#da cambiare sulla macchina finale
         count = 0
         curEmt = ER.getEmotion()
-        print("eccomi",curEmt, prevEmt)
+        #print("eccomi",curEmt, prevEmt)
         if prevEmt != curEmt:
-            print("eccomi")
+            #print("eccomi")
             if random.randint(0,10) < 2 :
                 AD.send_locations_suggestion(curEmt)
             else:

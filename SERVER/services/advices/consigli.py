@@ -2,10 +2,29 @@ from pymongo import MongoClient
 import random
 import paho.mqtt.client as mqtt
 import json
-def get_database():
 
+#broker = ""
+#port = 0
+#mongoUser = ""
+#mongoPasswd = ""
+
+def mqttParams(brokerL, portL):
+	global broker
+	global port
+	broker = brokerL
+	port = int(portL)
+
+def mongoParams(host,user, passw):
+	global mongoUser
+	global mongoPasswd
+	global mongoHost
+	mongoHost = host
+	mongoUser = user
+	mongoPasswd = passw
+
+def get_database():
    # Provide the mongodb atlas url to connect python to mongodb using pymongo
-   CONNECTION_STRING = "mongodb://root:root@localhost:27017/"
+   CONNECTION_STRING = f"mongodb://{mongoUser}:{mongoPasswd}@{mongoHost}:27017/"
 
    # Create a connection using MongoClient. You can import MongoClient or use pymongo.MongoClient
    client = MongoClient(CONNECTION_STRING)
@@ -52,8 +71,7 @@ def update_location(name, emotion,point): #want a JSON (name: name_to_match}
     newvalues = {"$inc": {emotion: point}}
     collection.update_one(name,newvalues)
 
-broker = "127.0.0.1"
-port = 1883
+
 
 def send_locations_suggestion(emotion):
     res = get_location_from_emotion(emotion)
@@ -92,6 +110,7 @@ def begin_song():
     return client
 
 def begin_location():
+    #print(broker, port, mongoUser, mongoPasswd)
     client = mqtt.Client("locationUpdater")
     client.on_message = on_message_location
     client.on_connect = on_connect_location

@@ -11,14 +11,35 @@ import base64
 from collections import Counter
 from pymongo import MongoClient
 import json
+import os
 
-broker = "127.0.0.1"
-port = 1883
+broker = ""
+port = 0
+mongoUser = os.getenv("USR")
+mongoPasswd = os.getenv("PASS")
+mongoHost = os.getenv("HOST")
+mongoPort = ""
 model = "./services/people/model.json"
 modelWeights = "./services/people/model_weights.h5"
 
+def mqttParams(brokerL, portL):
+	broker = brokerL
+	port = portL
+
+def mongoParams(host,user, passw):
+	global mongoHost
+	global mongoUser
+	global mongoPasswd
+	mongoHost = host
+	mongoUser = user
+	mongoPasswd = passw
+
 class PersonModel(object):
-    CS = "mongodb://root:root@localhost:27017/"
+    global mongoUser
+    global mongoPasswd
+    global mongoHost
+    CS = f"mongodb://{mongoUser}:{mongoPasswd}@{mongoHost}:27017/"
+    #print(CS)
     client = MongoClient(CS)
     dbname = client['kodi']
     c = dbname["0000.people"]
@@ -50,6 +71,7 @@ class PersonModel(object):
 facec = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 model = PersonModel(model, modelWeights)
 
+
 def recognize(image):
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     #gray_image = image
@@ -70,7 +92,7 @@ def recognize(image):
     x, y, w, h = faces[index]
     resImg = gray_image[y:y+h, x:x+w]
     roi = cv2.resize(resImg, (48, 48))
-    print(roi.ndim)
+    #print(roi.ndim)
     pred = model.predict_person(roi[np.newaxis, :, :, np.newaxis])
     return pred
 
@@ -102,15 +124,14 @@ def on_message(client, userdata, msg):
     imag = np.frombuffer(data, dtype=np.uint8)
     img = cv2.imdecode(imag, cv2.IMREAD_COLOR)#forse come secondo argomento anche 0 per scala di grigi
 
-    #imread_unchanged
     pred = recognize(img)
     preds.append(pred);
     pred = "buffering"
     if len(preds) == 21: #l'accesso a mongo si dovrebbe fare solo una volta
-        #preds.pop(0)
         occ = Counter(preds)
         pred = occ.most_common(1)[0][0]
-        client = MongoClient("mongodb://root:root@localhost:27017/")
+        #print(mongoUser, mongoPasswd, mongoHost)
+        client = MongoClient(f"mongodb://{mongoUser}:{mongoPasswd}@{mongoHost}:27017/")
         collection = client['kodi'][id]["people"]
         pid = list(collection.find({"person":pred}))[0]['person_id']
         pred = {"id":pid,"person":pred}
