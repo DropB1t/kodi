@@ -1,3 +1,25 @@
+/mosquitto
+/mongo/data
+/*.sh
+/*.old
+/*.yml
+/templates
+/scripts
+/broker/update.py
+/broker/services/trainingold
+/broker/services/people/people.txt
+/mongo
+/utility
+/broker/dockerFiles
+/broker/setup
+/broker/start.sh
+/broker/services/training
+
+
+
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
