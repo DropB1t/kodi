@@ -1,0 +1,12 @@
+/mosquitto
+/mongo/data
+/*.sh
+/*.old
+/*.yml
+/templates
+/scripts
+/SERVER/update.py
+/SERVER/services/trainingold
+/SERVER/services/people/people.txt
+/mongo
+/utility
