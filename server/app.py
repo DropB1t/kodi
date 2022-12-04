@@ -4,14 +4,13 @@ from flask_socketio import SocketIO, emit
 from camera import Camera
 import eventlet
 import json
-import pickle
 import hashlib
 
 eventlet.monkey_patch()
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.config['MQTT_BROKER_URL'] = "broker.emqx.io"
+app.config['MQTT_BROKER_URL'] = "localhost" #"broker.emqx.io"
 app.config['MQTT_BROKER_PORT'] = 1883
 
 mqtt = Mqtt(app)
@@ -21,6 +20,7 @@ camera = Camera()
 imgCount = 0
 
 user = None
+emotion = "Unknown"
 
 recognition_pub = 'prsn/0000/camera'
 recognition_reply = 'prsn/0000/cameraReply'
@@ -45,6 +45,16 @@ lista generica di consigli
 }
 """
 
+"""
+Preferendo una canzone mandi verso il topic <adv/0000/musicRanking>, ID dell'utente, e 
+la conferma della preferenza in un json ovvero <il nome della canzone>/<il nome del posto>
+
+{
+    id: 1
+    adv: "Capitol Steps"
+}
+"""
+
 """ App Routes """
 
 @app.route("/")
@@ -61,11 +71,9 @@ def login():
 def dashboard():
     global user
     if user is None:
-        loadUser("1Yuriy Rymarchuk")
-        #return render_template("login.html")
-    #camera.set_pause(1.5)
-    print(user)
-    return render_template("dashboard.html", name = user['user'])
+        return render_template("login.html")
+    camera.set_pause(0.8)
+    return render_template("dashboard.html", **user)
 
 @app.route("/reset")
 def reset():
@@ -95,6 +103,30 @@ def emotion_frame_requested(message):
     if frame is not None:
         mqtt.publish(emotion_pub, frame)
 
+@socketio.on("music-up", namespace="/dashboard-feed")
+def music_ranking_update(message):
+    # create json by adding score: 1, emotion, song : {message}
+    global emotion
+    res = dict()
+    res['emotion'] = emotion
+    res['song'] = message
+    res['score'] = 1
+    json_object = json.dumps(res)
+    #print(json_object)
+    mqtt.publish(music_ranking_pub, json_object)
+
+@socketio.on("place-up", namespace="/dashboard-feed")
+def palce_ranking_update(message):
+    # create json by adding score: 1, emotion, place : {message}
+    global emotion
+    res = dict()
+    res['emotion'] = emotion
+    res['place'] = message
+    res['score'] = 1
+    json_object = json.dumps(res)
+    #print(json_object)
+    mqtt.publish(place_ranking_pub, json_object)
+
 """ MQTT Handlers """
 
 @mqtt.on_connect()
@@ -103,6 +135,8 @@ def handle_connect(client, userdata, flags, rc):
         print("Connected successfully")
         mqtt.subscribe(recognition_reply)
         mqtt.subscribe(emotion_reply)
+        mqtt.subscribe(music_list_reply)
+        mqtt.subscribe(place_list_reply)
     else:
         print("Bad connection. Code:", rc)
 
@@ -111,21 +145,34 @@ def handle_recognition_reply(client, userdata, msg):
     res = json.loads(msg.payload.decode())
     print('User data {}'.format(res))
     if res['id'] != -1:
-        user_UID = str(res['id']) + res['user']
-        loadUser(user_UID)
+        loadUser("Yuriy Rymarchuk") #loadUser(res['person'])
     socketio.emit('login-res', res, namespace="/login-feed")
     
 def loadUser(user_UID:str):
     global user
     hash_uid = hashlib.sha256(user_UID.encode('utf-8')).hexdigest()
-    with open('./data/' + hash_uid, "rb") as infile:
- 	    user = pickle.load(infile)
+    with open('./data/' + hash_uid + ".json", "rb") as json_file:
+ 	    user = json.load(json_file)
 
 @mqtt.on_topic(emotion_reply)
 def handle_emotion_reply(client, userdata, msg):
+    global emotion
+    print('Received message on topic {}: {}'.format(msg.topic, msg.payload.decode()))
+    res = msg.payload.decode()
+    emotion = res
+    socketio.emit('emotion-res', res, namespace="/dashboard-feed")
+
+@mqtt.on_topic(music_list_reply)
+def handle_music_list_reply(client, userdata, msg):
     print('Received message on topic {}: {}'.format(msg.topic, msg.payload.decode()))
     res = json.loads(msg.payload.decode())
-    socketio.emit('emotion-res', res, namespace="/dashboard-feed")
+    socketio.emit('music-list', res, namespace="/dashboard-feed")
+
+@mqtt.on_topic(place_list_reply)
+def handle_place_list_reply(client, userdata, msg):
+    print('Received message on topic {}: {}'.format(msg.topic, msg.payload.decode()))
+    res = json.loads(msg.payload.decode())
+    socketio.emit('place-list', res, namespace="/dashboard-feed")
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, msg):
@@ -135,21 +182,9 @@ def handle_mqtt_message(client, userdata, msg):
 def on_publish(client, userdata, result):
     print("Data published")
 
-"""
-@mqtt.on_log()
-def handle_logging(client, userdata, level, buf):
-    print(level, buf)
-"""
-
-"""
-Preferendo una canzone mandi verso il topic <prsn/0000/musicPreference>, ID dell'utente, e 
-la conferma della preferenza in un json ovvero <il nome della canzone>/<il nome del posto>
-"""
-
 if __name__ == "__main__":
     try:
         camera.start()
         socketio.run(app, host='127.0.0.1', port=5000, use_reloader=False, debug=True)
     except KeyboardInterrupt:
         camera.stop()
-    

@@ -1,0 +1,78 @@
+<div id="overlay" class="hidden relative z-10">
+
+  <div id="overlay-bg" class="fixed inset-0 bg-gray-500 bg-opacity-80 animate__animated animate__faster"></div>
+
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
+
+        <div id="sidepanel" class="relative w-screen max-w-md animate__animated animate__faster">
+          <div class="absolute top-0 left-0 -ml-8 flex pt-4 pr-2">
+            <button id="overlay-btn" type="button" class="rounded-md text-white outline-none ring-2 ring-white">
+              <span class="sr-only">Close panel</span>
+              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="flex h-full flex-col overflow-y-scroll bg-main py-6 shadow-xl">
+            <div class="px-4">
+              <h2 class="flex items-center text-lg text-headline font-bold ">Configuration Panel
+                <svg class="inline ml-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="9"></rect>
+                  <rect x="14" y="3" width="7" height="5"></rect>
+                  <rect x="14" y="12" width="7" height="9"></rect>
+                  <rect x="3" y="16" width="7" height="5"></rect>
+                </svg>
+              </h2>
+            </div>
+            <div class="relative mt-6 flex-1 px-4">
+              <div class="overflow-hidden border-2 border-secondary bg-main shadow rounded-lg">
+                <div class="px-4 py-5 ">
+                  <h3 class="text-lg font-medium leading-6 text-gray-900">Applicant Information</h3>
+                  <p class="mt-1 max-w-2xl text-md ">Personal {{person}} settings details</p>
+                </div>
+                <div class="text-paraf border-t border-gray-200">
+                  <dl>
+                    <div class="bg-secondary text-headline px-4 py-5 grid grid-cols-3 gap-4 ">
+                      <dt class="text-md col-span-2 font-medium ">Seat Height</dt>
+                      <dd class="mt-1 text-md  ">{{seat_height}}/10</dd>
+                    </div>
+                    <div class="bg-main px-4 py-5 grid grid-cols-3 gap-4 ">
+                      <dt class="text-md font-medium col-span-2 ">Seat Position</dt>
+                      <dd class="mt-1 text-md ">{{seat_position}}/10</dd>
+                    </div>
+                    <div class="bg-secondary text-headline bg-opacity-90 px-4 py-5 grid grid-cols-3 gap-4 ">
+                      <dt class="text-md font-medium col-span-2 ">Seat Tilt</dt>
+                      <dd class="mt-1 text-md  ">{{seat_tilt}}°/100°</dd>
+                    </div>
+                    <div class="bg-main px-4 py-5 grid grid-cols-3 gap-4 ">
+                      <dt class="text-md font-medium col-span-2 ">Head Rest</dt>
+                      <dd class="mt-1 text-md ">{{head_rest_height}}/6</dd>
+                    </div>
+                    <div class="bg-secondary text-headline px-4 py-5 grid grid-cols-3 gap-4 ">
+                      <dt class="text-md font-medium col-span-2 ">Steering Height</dt>
+                      <dd class="mt-1 text-md ">{{steering_height}}/5</dd>
+                    </div>
+                    <div class="bg-main px-4 py-5 grid grid-cols-3 gap-4 ">
+                      <dt class="text-md font-medium col-span-2 ">Headlights Height</dt>
+                      <dd class="mt-1 text-md  ">{{headlight_height}}/3</dd>
+                    </div>
+                    <div class="bg-secondary text-headline px-4 py-5 grid grid-cols-3 gap-4 ">
+                      <dt class="text-md font-medium col-span-2 ">Mirrors Level</dt>
+                      <dd class="mt-1 text-md  ">{{mirrors_level}}/4</dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+  </div>
+
+</div>
