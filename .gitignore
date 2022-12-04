@@ -5,8 +5,12 @@
 /*.yml
 /templates
 /scripts
-/SERVER/update.py
-/SERVER/services/trainingold
-/SERVER/services/people/people.txt
+/broker/update.py
+/broker/services/trainingold
+/broker/services/people/people.txt
 /mongo
 /utility
+/broker/dockerFiles
+/broker/setup
+/broker/start.sh
+/broker/services/training
