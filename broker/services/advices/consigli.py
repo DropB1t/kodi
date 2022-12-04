@@ -129,10 +129,3 @@ def begin_location():
 
 def giro(client):
     client.loop(0.1)
-
-'''
-# update_song({'name': 'Testify', 'album': 'The Battle Of Los Angeles'},"Happy",5)
-update_location({name:"YAYCHI, WEST AZERBAIJAN"},"Happy",5)
-for x in get_location_from_emotion("Happy"):
-    print(x)
-'''
