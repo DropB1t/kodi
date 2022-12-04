@@ -7,8 +7,8 @@ class Camera:
     def __init__(self):
         self.thread = None
         self.current_frame  = None
-        self.last_access = None
         self.is_running: bool = False
+        self.pause: float = 0.015
         self.camera = cv2.VideoCapture(0)
         if not self.camera.isOpened():
             raise Exception("Could not open video device")
@@ -24,8 +24,10 @@ class Camera:
             self.thread.start()
 
     def get_frame(self):
-        self.last_access = time.time()
         return self.current_frame
+
+    def set_pause(self,num: float = 0.015):
+        self.pause = num
 
     def stop(self):
         self.is_running = False
@@ -36,10 +38,10 @@ class Camera:
     def _capture(self):
         try:
             self.is_running = True
-            self.last_access = time.time()
             while self.is_running:
-                time.sleep(0.001)
+                time.sleep(self.pause)
                 ret, frame = self.camera.read()
+                #print('Frame fetched')
                 if ret:
                     ret, encoded = cv2.imencode(".jpg", frame)
                     if ret:

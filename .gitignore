@@ -1,6 +1,7 @@
 # Personal ignores
 tailwindcss
 tailwindcss.exe
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

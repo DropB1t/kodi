@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block js %}
-<script src="{{ url_for('static', filename='js/login.js') }} " type="text/javascript"></script>
+<script src="{{ url_for('static', filename='js/login.js') }} " type="module"></script>
 {% endblock %}
 
 {% block content %}
 
 <div class="bg-main text-headline self-start rounded-md mt-2 ml-2">
-  <h1 class="text-3xl px-3 py-2 font-bold inline-flex items-center">Face recognition
+  <h1 id="login-action" class="text-3xl px-3 py-2 font-bold inline-flex items-center">Face recognition
     <div role="status">
       <svg class="inline ml-2 w-5 h-5 self-center animate-spin text-gray-100 fill-gray-900 " viewBox="0 0 100 101"
         fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -21,10 +21,10 @@
       <span class="sr-only">Loading Animation</span>
     </div>
   </h1>
-  <h4 class="text-lg px-3 pb-2">Scanning . . .</h4>
 </div>
 
-<div class="mx-auto my-auto w-1/2 border-8 border-secondary rounded-md border-solid shadow-md shadow-neutral-700">
+<div id="cam-div" class="animate__animated animate__fadeIn animate__fast mx-auto my-auto w-1/2 border-8 border-secondary rounded-md border-solid shadow-md shadow-neutral-700">
+  <svg id="scan-icon" class="fixed m-1 rounded-sm bg-main text-headline animate-pulse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><path d="M9 9h.01"></path><path d="M15 9h.01"></path></svg>
   <img class="w-full" id="camera-frame" width="640" height="480" />
 </div>
 

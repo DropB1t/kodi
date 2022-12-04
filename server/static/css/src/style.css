@@ -18,12 +18,12 @@
 .keyboard {
   @apply grid grid-cols-3 grid-rows-6 gap-1 
   p-1 w-full bg-headline h-96 font-bold rounded-lg 
-  ring-2 ring-white/20 shadow text-white select-none;
+  shadow-md shadow-neutral-700 text-white select-none;
 }
 
 .keyboard .display {
   @apply col-span-3 row-span-2 bg-headline rounded-lg 
-  grid grid-cols-9 gap-1 place-content-center
+  grid grid-cols-8 gap-1 place-content-center
 }
 
 .keyboard button {

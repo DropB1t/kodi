@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }} " type="module"></script>
+{% endblock %}
+
+{% block content %}
+<div class="text-xl text-headline font-bold flex items-center justify-start gap-3 m-2">
+    <div class="bg-main px-3 py-2 rounded-md">
+        <h1 class="flex items-center">{{name}} is driving 
+            <svg class="inline ml-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 15 3.5-3.5"></path><path d="M20.3 18c.4-1 .7-2.2.7-3.4C21 9.8 17 6 12 6s-9 3.8-9 8.6c0 1.2.3 2.4.7 3.4"></path></svg>
+        </h1>
+    </div>
+    <div id="weather-widget" class="flex items-center justify-between px-3 py-2 bg-main text-headline rounded-md"></div>
+    <div id="time-date-widget" class="px-3 py-2 min-w- bg-main text-headline rounded-md"><span>      </span></div>
+</div>
+
+{% endblock %}
