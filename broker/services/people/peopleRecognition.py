@@ -120,6 +120,7 @@ preds = []
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
+    global preds
     result = re.search('/(.*)/', msg.topic)#prendo l'id con regex
     id = result.group(1)
     data = base64.b64decode(msg.payload+b'==')
@@ -137,6 +138,7 @@ def on_message(client, userdata, msg):
         pid = list(collection.find({"person":pred}))[0]['person_id']
         pred = {"id":pid,"person":pred}
         pred = json.dumps(pred)
+        preds = []
         respond(pred,id)
 
 def begin():
