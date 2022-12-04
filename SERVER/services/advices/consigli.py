@@ -2,6 +2,7 @@ from pymongo import MongoClient
 import random
 import paho.mqtt.client as mqtt
 import json
+import re
 
 broker = ""
 port = 0
