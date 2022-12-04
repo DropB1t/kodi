@@ -8,3 +8,5 @@
 /SERVER/update.py
 /SERVER/services/trainingold
 /SERVER/services/people/people.txt
+/mongo
+/utility
