@@ -16,8 +16,10 @@ model = "./services/emotions/model.json"
 modelWeights = "./services/emotions/model_weights.h5"
 
 def mqttParams(brokerL, portL):
-	broker = brokerL
-	port = portL
+    global broker
+    global port
+    broker = brokerL
+    port = int(portL)
 
 class FacialExpressionModel(object):
 
@@ -71,6 +73,8 @@ def on_publish(client,userdata,result):             #create function for callbac
     pass
 
 def respond(person,id):
+    global broker
+    global port
     client1= mqtt.Client("control1")                           #create client object
     client1.on_publish = on_publish                          #assign function to callback
     #client1.username_pw_set("mqtt-test", "mqtt-test")
@@ -111,10 +115,12 @@ def on_message(client, userdata, msg):
         respond(pred,id)
 
 def begin():
+    global broker
+    global port
     clientE = mqtt.Client("emotionsRecognizer")
     clientE.on_connect = on_connect
     clientE.on_message = on_message
-    clientE.connect("127.0.0.1", 1883)
+    clientE.connect(broker, port)
     return clientE
     
 

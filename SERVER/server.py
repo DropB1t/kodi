@@ -4,18 +4,19 @@ from services.advices import consigli as AD
 import random
 import os
 
-broker = os.getenv('BROKER')
-port = os.getenv('PORT')
-user = os.getenv('USR')
-passw = os.getenv('PASS')
-host = os.getenv('HOST')
+broker = os.getenv('MOSQUITTO_IP')
+port = os.getenv('MOSQUITTO_PORT')
+user = os.getenv('MONGO_USER')
+passw = os.getenv('MONGO_PASSWD')
+host = os.getenv('MONGO_IP')
+mongoPort = os.getenv('MONGO_PORT')
 
 ER.mqttParams(broker, port)
 PR.mqttParams(broker, port)
 AD.mqttParams(broker, port)
 
-PR.mongoParams(host,user, passw)
-AD.mongoParams(host,user, passw)
+PR.mongoParams(host, mongoPort, user, passw)
+AD.mongoParams(host,mongoPort, user, passw)
 
 
 cl1 = ER.begin()
@@ -26,17 +27,21 @@ cl4 = AD.begin_song()
 count = 0
 prevEmt = "buffering"
 curEmt = "buffering"
+firstTime = True
 while(True): #amo le attese attive
     if count == 10:#da cambiare sulla macchina finale
         count = 0
         curEmt = ER.getEmotion()
-        #print("eccomi",curEmt, prevEmt)
         if prevEmt != curEmt:
-            #print("eccomi")
-            if random.randint(0,10) < 2 :
+            if firstTime:
                 AD.send_locations_suggestion(curEmt)
-            else:
                 AD.send_songs_suggestion(curEmt)
+                firstTime = False
+            else:
+                if random.randint(0,10) < 2 :
+                    AD.send_locations_suggestion(curEmt)
+                else:
+                    AD.send_songs_suggestion(curEmt)
     ER.giro(cl1)
     PR.giro(cl2)
     AD.giro(cl3)

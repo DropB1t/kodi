@@ -15,30 +15,34 @@ import os
 
 broker = ""
 port = 0
-mongoUser = os.getenv("USR")
-mongoPasswd = os.getenv("PASS")
-mongoHost = os.getenv("HOST")
-mongoPort = ""
+mongoUser = os.getenv("MONGO_USER")
+mongoPasswd = os.getenv("MONGO_PASSWD")
+mongoHost = os.getenv("MONGO_IP")
+mongoPort = 27017
 model = "./services/people/model.json"
 modelWeights = "./services/people/model_weights.h5"
 
 def mqttParams(brokerL, portL):
-	broker = brokerL
-	port = portL
+    global broker
+    global port
+    broker = brokerL
+    port = int(portL)
 
-def mongoParams(host,user, passw):
-	global mongoHost
-	global mongoUser
-	global mongoPasswd
-	mongoHost = host
-	mongoUser = user
-	mongoPasswd = passw
+def mongoParams(host, port, user, passw):
+    global mongoHost
+    global mongoUser
+    global mongoPasswd
+    global mongoPort
+    mongoHost = host
+    mongoPort = int(port)
+    mongoUser = user
+    mongoPasswd = passw
 
 class PersonModel(object):
     global mongoUser
     global mongoPasswd
     global mongoHost
-    CS = f"mongodb://{mongoUser}:{mongoPasswd}@{mongoHost}:27017/"
+    CS = f"mongodb://{mongoUser}:{mongoPasswd}@{mongoHost}:{mongoPort}/"
     #print(CS)
     client = MongoClient(CS)
     dbname = client['kodi']
@@ -101,6 +105,8 @@ def on_publish(client,userdata,result):             #create function for callbac
     pass
 
 def respond(person,id):
+    global broker
+    global port
     client1= mqtt.Client("control1")                           #create client object
     client1.on_publish = on_publish                          #assign function to callback
     #client1.username_pw_set("mqtt-test", "mqtt-test")
@@ -142,7 +148,7 @@ def begin():
     clientP = mqtt.Client("peopleRecognizer")
     clientP.on_connect = on_connect
     clientP.on_message = on_message
-    clientP.connect("127.0.0.1", 1883)
+    clientP.connect("broker", 1883)
     return clientP
     
 def giro(clientP):

@@ -3,10 +3,12 @@ import random
 import paho.mqtt.client as mqtt
 import json
 
-#broker = ""
-#port = 0
-#mongoUser = ""
-#mongoPasswd = ""
+broker = ""
+port = 0
+mongoUser = ""
+mongoPasswd = ""
+mongoHost = ""
+mongoPort = ""
 
 def mqttParams(brokerL, portL):
 	global broker
@@ -14,13 +16,15 @@ def mqttParams(brokerL, portL):
 	broker = brokerL
 	port = int(portL)
 
-def mongoParams(host,user, passw):
-	global mongoUser
-	global mongoPasswd
-	global mongoHost
-	mongoHost = host
-	mongoUser = user
-	mongoPasswd = passw
+def mongoParams(host, port, user, passw):
+    global mongoUser
+    global mongoPasswd
+    global mongoHost
+    global mongoPort
+    mongoHost = host
+    mongoUser = user
+    mongoPasswd = passw
+    mongoPort = port
 
 def get_database():
    # Provide the mongodb atlas url to connect python to mongodb using pymongo
@@ -38,8 +42,8 @@ def get_songs_from_emotion(emotion):
     dbname = get_database()
     collection = dbname["0000"]["songs"]
     suggested = []
-    top_two = collection.find({},{"_id":0,"name":1,"album":1, "artists":1}).sort(emotion,-1).limit(3)
-    random_result = collection.find({},{"_id":0,"name":1,"album":1, "artists":1}).sort(emotion,-1).skip(random.randint(3,1204025)).limit(2)
+    top_two = collection.find({},{"_id":0,"name":1,"album":1, "artists":1}, allow_disk_use=True).limit(3)
+    random_result = collection.find({},{"_id":0,"name":1,"album":1, "artists":1}, allow_disk_use=True).sort(emotion,-1).skip(random.randint(3,1204025)).limit(2)
     for x in top_two:
         suggested.append(x)
     for x in random_result:
@@ -51,8 +55,8 @@ def get_location_from_emotion(emotion):
     dbname = get_database()
     collection = dbname["0000"]["locations"]
     suggested = []
-    top_two = collection.find({},{"_id":0,"name":1,"latitude_radian":1, "longitude_radian":1}).sort(emotion,-1).limit(3)
-    random_result = collection.find({},{"_id":0,"name":1,"latitude_radian":1, "longitude_radian":1}).sort(emotion,-1).skip(random.randint(3,424205)).limit(2)
+    top_two = collection.find({},{"_id":0,"name":1,"latitude_radian":1, "longitude_radian":1}, allow_disk_use=True).sort(emotion,-1).limit(3)
+    random_result = collection.find({},{"_id":0,"name":1,"latitude_radian":1, "longitude_radian":1}, allow_disk_use=True).sort(emotion,-1).skip(random.randint(3,424205)).limit(2)
     for x in top_two:
         suggested.append(x)
     for x in random_result:
@@ -102,6 +106,8 @@ def on_connect_location(client, userdata, flags, rc):
     print("connected location")
 
 def begin_song():
+    global broker
+    global port
     client = mqtt.Client("songsUpdater")
     client.on_message = on_message_song
     client.on_connect = on_connect_song
@@ -110,6 +116,8 @@ def begin_song():
     return client
 
 def begin_location():
+    global broker
+    global port
     #print(broker, port, mongoUser, mongoPasswd)
     client = mqtt.Client("locationUpdater")
     client.on_message = on_message_location
