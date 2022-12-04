@@ -1,1 +1,1 @@
-Guarda il README in riconoscimentoPersona
+Guarda il README in people
