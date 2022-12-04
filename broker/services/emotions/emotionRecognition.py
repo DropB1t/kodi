@@ -10,8 +10,8 @@ import re
 import base64
 from collections import Counter
 
-broker="" # = "127.0.0.1"
-port=0 # = 1883
+broker="" 
+port=0 
 model = "./services/emotions/model.json"
 modelWeights = "./services/emotions/model_weights.h5"
 
@@ -77,7 +77,6 @@ def respond(person,id):
     global port
     client1= mqtt.Client("control1")                           #create client object
     client1.on_publish = on_publish                          #assign function to callback
-    #client1.username_pw_set("mqtt-test", "mqtt-test")
     client1.connect(broker,port)                                 #establish connection
     ret= client1.publish("emt/"+id+"/cameraReply",person)
 
@@ -107,7 +106,6 @@ def on_message(client, userdata, msg):
     img = cv2.imdecode(imag, cv2.IMREAD_COLOR)#forse come secondo argomento anche 0 per scala di grigi
     pred = recognize(img)
     preds.append(pred);
-    #pred = "buffering"
     if len(preds) == 6:
         preds.pop(0)
         occ = Counter(preds)
