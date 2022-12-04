@@ -78,7 +78,6 @@ model = PersonModel(model, modelWeights)
 
 def recognize(image):
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    #gray_image = image
     faces = facec.detectMultiScale(gray_image, 1.3, 5)
     if len(faces) == 0:
         return "unknown"
@@ -96,7 +95,6 @@ def recognize(image):
     x, y, w, h = faces[index]
     resImg = gray_image[y:y+h, x:x+w]
     roi = cv2.resize(resImg, (48, 48))
-    #print(roi.ndim)
     pred = model.predict_person(roi[np.newaxis, :, :, np.newaxis])
     return pred
 
@@ -109,7 +107,6 @@ def respond(person,id):
     global port
     client1= mqtt.Client("control1")                           #create client object
     client1.on_publish = on_publish                          #assign function to callback
-    #client1.username_pw_set("mqtt-test", "mqtt-test")
     client1.connect(broker,port)                                 #establish connection
     ret= client1.publish("prsn/"+id+"/cameraReply",person)
 
@@ -119,14 +116,13 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("prsn/+/camera")
 
 
-preds = [] # che schifo
+preds = [] 
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     result = re.search('/(.*)/', msg.topic)#prendo l'id con regex
     id = result.group(1)
     data = base64.b64decode(msg.payload+b'==')
-    #data = msg.payload
     imag = np.frombuffer(data, dtype=np.uint8)
     img = cv2.imdecode(imag, cv2.IMREAD_COLOR)#forse come secondo argomento anche 0 per scala di grigi
 
@@ -136,7 +132,6 @@ def on_message(client, userdata, msg):
     if len(preds) == 21: #l'accesso a mongo si dovrebbe fare solo una volta
         occ = Counter(preds)
         pred = occ.most_common(1)[0][0]
-        #print(mongoUser, mongoPasswd, mongoHost)
         client = MongoClient(f"mongodb://{mongoUser}:{mongoPasswd}@{mongoHost}:27017/")
         collection = client['kodi'][id]["people"]
         pid = list(collection.find({"person":pred}))[0]['person_id']
