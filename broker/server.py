@@ -28,8 +28,8 @@ count = 0
 prevEmt = "buffering"
 curEmt = "buffering"
 firstTime = True
-while(True): #amo le attese attive
-    if count == 10:#da cambiare sulla macchina finale
+while(True):
+    if count == 10:
         count = 0
         curEmt = ER.getEmotion()
         if prevEmt != curEmt:
