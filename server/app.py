@@ -145,7 +145,7 @@ def handle_recognition_reply(client, userdata, msg):
     res = json.loads(msg.payload.decode())
     print('User data {}'.format(res))
     if res['id'] != -1:
-        loadUser("Yuriy Rymarchuk") #loadUser(res['person'])
+        loadUser(res['person'])
     socketio.emit('login-res', res, namespace="/login-feed")
     
 def loadUser(user_UID:str):
