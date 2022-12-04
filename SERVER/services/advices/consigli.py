@@ -112,7 +112,7 @@ def begin_song():
     client.on_message = on_message_song
     client.on_connect = on_connect_song
     client.connect(broker,port)
-    client.subscribe("prsn/+/musicRanking")
+    client.subscribe("adv/+/musicRanking")
     return client
 
 def begin_location():
@@ -123,7 +123,7 @@ def begin_location():
     client.on_message = on_message_location
     client.on_connect = on_connect_location
     client.connect(broker,port)
-    client.subscribe("prsn/+/placeRanking")
+    client.subscribe("adv/+/placeRanking")
     return client
 
 def giro(client):
