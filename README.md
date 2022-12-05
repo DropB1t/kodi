@@ -14,3 +14,6 @@ Digitare `pip install -r requirements.txt` dentro la cartella **/server**
 
 ### Run
 Per far partire il server digitare `python3 app.py`. **NB** è indispensabile avere una videocamera come periferica, va bene anche quella default del portatile
+
+## Use Case
+Per il prototipo in uso potete vedere questo piccolo video: [prototipo in uso](https://drive.google.com/file/d/1k_Q3X471oNPFuRMEiGusge-NTMzBEOlF/view?usp=share_link)
