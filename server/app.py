@@ -34,27 +34,6 @@ place_ranking_pub = 'adv/0000/placeRanking'
 music_list_reply = 'adv/0000/musicList'
 place_list_reply = 'adv/0000/placeList'
 
-"""
-lista generica di consigli
-{
-    [{},{},...]
-}
-{
-    id: int,
-    adv: string,
-}
-"""
-
-"""
-Preferendo una canzone mandi verso il topic <adv/0000/musicRanking>, ID dell'utente, e 
-la conferma della preferenza in un json ovvero <il nome della canzone>/<il nome del posto>
-
-{
-    id: 1
-    adv: "Capitol Steps"
-}
-"""
-
 """ App Routes """
 
 @app.route("/")
